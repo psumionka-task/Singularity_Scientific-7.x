@@ -1,0 +1,50 @@
+BootStrap: docker
+From: sl:7
+
+%labels
+    
+    Author Piotr Sumionka : Politechnika Gdańska, CI TASK - dział KDM [kdm.task.gda.pl]
+
+%help
+    
+    # Uruchomienie zadania w kontenerze
+    singularity exec <nazwa_obrazu> <polecenie>
+
+    W razie problemów, proszę o wiadomość na adres:
+    kdm@task.gda.pl
+
+%post
+    echo "Witaj wewnątrz kontenera, trwa konfiguracja środowiska..."
+    yum -y install wget
+    cd /tmp
+    wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    yum -y install epel-release-latest-7.noarch.rpm
+    yum -y update
+    yum -y upgrade
+    # Infiniband and OpenMPI user libraries
+    yum install -y libmlx4 libibverbs libibverbs-devel rdma librdmacm dapl
+    yum install -y numactl numactl-libs numactl-devel
+    # Other useful libraries
+    yum install -y pciutils
+    yum install -y which
+    #
+    yum -y install wget git nano mc java tar gzip ntp curl net-tools ksh ssh openssh-askpass xterm  perl-Tk perl-Env pam-1.1.8-22* libX*
+    yum -y groupinstall "Fonts" "Development tools"
+    #yum -y groupinstall "Środowisko GNOME"
+    yum -y update
+    yum -y upgrade
+    yum -y clean all
+
+    # Puste katalogi
+    cd /
+    mkdir apl
+    mkdir users
+    mkdir scratch
+
+%environment
+    # X11
+    TERM=xterm
+
+%runscript
+    echo "Uruchamianie zadania wewnatrz srodowiska..."
+
